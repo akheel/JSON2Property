@@ -1,6 +1,6 @@
 {
   "name": "JSON2Property",
-  "version": "0.1.0",
+  "version": "1.0.0-alpha",
   "description": "Given a Target Directory will go through and convert json files into properties files",
   "main": "index.js",
   "scripts": {
@@ -18,7 +18,7 @@
     "node": ">=0.8.14"
   },
   "bin": {
-    "convert": "./bin/convert.js"
+    "json2property": "./bin/json2property.js"
   },
   "dependencies": {
     "commander": "~2.0.0",
