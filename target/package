@@ -1,0 +1,12 @@
+name=JSON2Property
+version=0.0.1
+description=Given a Target Directory will go through and convert json files into properties files
+main=index.js
+scripts=[object Object]
+repository=
+keywords=json,property,properties
+author=James Black
+license=MIT
+engines=[object Object]
+bin=[object Object]
+dependencies=[object Object]

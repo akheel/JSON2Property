@@ -1,0 +1,26 @@
+{
+  "name": "JSON2Property",
+  "version": "0.0.1",
+  "description": "Given a Target Directory will go through and convert json files into properties files",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": "",
+  "keywords": [
+    "json",
+    "property",
+    "properties"
+  ],
+  "author": "James Black",
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.8.14"
+  },
+  "bin": {
+    "convert": "./bin/convert.js"
+  },
+  "dependencies": {
+    "commander": "~2.0.0"
+  }
+}
