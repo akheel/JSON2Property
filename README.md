@@ -7,3 +7,6 @@ A simple tool for converting json files into property files. Simply run ```json2
 
 Run tests with ```npm test```
 
+## Using
+
+[Node Glob](https://github.com/isaacs/node-glob) as a tool to gather up the list of files.
