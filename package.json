@@ -4,7 +4,7 @@
   "description": "Given a Target Directory will go through and convert json files into properties files",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "./node_modules/.bin/mocha -R spec"
   },
   "repository": "",
   "keywords": [
@@ -22,6 +22,11 @@
   },
   "dependencies": {
     "commander": "~2.0.0",
-    "glob": "~3.2.6"
+    "glob": "~3.2.6",
+    "mocha": "~1.12.0",
+    "chai": "~1.7.2",
+    "progress": "~1.0.0",
+    "batch": "~0.5.0",
+    "mkpath": "~0.1.0"
   }
 }
