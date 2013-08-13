@@ -13,8 +13,8 @@ var mkpath = require('mkpath');
 
 program
   .version('1.0.0-alpha')
-  .option('-i, --in <directory>', 'input directory', process.cwd())
-  .option('-o, --out <directory>', 'output directory', process.cwd())
+  .option('-i, --in <directory>', 'input directory', ".")
+  .option('-o, --out <directory>', 'output directory', "./target")
   .option('-p, --pattern <pattern>', 'pattern to match (uses glob)', '/**/*.json')
   .parse(process.argv);
 
@@ -23,6 +23,7 @@ glob(program.in + "" + program.pattern, function(error, files){
   var i;
   var read_file;
   var path, file_name, last_slash;
+  var errors = [];
 
   console.log(files);
 
@@ -38,6 +39,7 @@ glob(program.in + "" + program.pattern, function(error, files){
     return { path: path, file_name: file_name };
   });
 
+
   var bar = new ProgressBar("Transcoding item :current of :total [:bar] :percent, :etas",
     {
       total: files.length,
@@ -46,14 +48,32 @@ glob(program.in + "" + program.pattern, function(error, files){
       width: 40
   });
 
+  batch.concurrency(5);
+
+  var process_file = function(file) {
+    return function(done){
+      read(file.path + file.file_name, function(err, data){
+        file.contents = json2property.convert(JSON.parse(data));
+        mkpath.sync(program.out + "/" + file.path);
+        write(program.out + "/" + file.path + file.file_name.replace('.json', '.properties'), file.contents, function(err){
+          if (err) errors.push(err);
+          done(null, file);
+          bar.tick();
+        });
+      });
+    };
+  };
+
+  for (i = 0; i < files.length; i++) {
+    batch.push(process_file(files[i]));
+  }
+
+  batch.end(function(err, results){
+    console.log('\nTranscoding Complete');
+    process.exit(0);
+  });
 
 });
-
-var process_files = function(error, files) {
-  if (error) { throw_error(error); }
-
-  console.log("process_files = ", files);
-};
 
 var throw_error = function(error) {
   console.log(error);
