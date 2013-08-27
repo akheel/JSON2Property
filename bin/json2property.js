@@ -5,7 +5,8 @@ var json2property = require('../lib/json2property');
 var glob = require('glob');
 var write = require('fs').writeFile;
 var read = require('fs').readFile;
-var ProgressBar = require('progress');
+var multimeter = require('multimeter');
+var multi = multimeter(process);
 var program = require('commander');
 var Batch = require('batch');
 var batch = new Batch();
@@ -25,7 +26,11 @@ glob(program.in + "" + program.pattern, function(error, files){
   var path, file_name, last_slash;
   var errors = [];
 
-  console.log(files);
+  console.log("Found " + files.length + " files for transcoding.\n");
+
+  var bar = multi.rel(0, 1, {
+    width: 40
+  });
 
   if (error) { throw_error(error); }
   files = files.map(function(file){
@@ -39,16 +44,7 @@ glob(program.in + "" + program.pattern, function(error, files){
     return { path: path, file_name: file_name };
   });
 
-
-  var bar = new ProgressBar("Transcoding item :current of :total [:bar] :percent, :etas",
-    {
-      total: files.length,
-      complete: '=',
-      incomplete: '-',
-      width: 40
-  });
-
-  batch.concurrency(5);
+  batch.concurrency(1);
 
   var process_file = function(file) {
     return function(done){
@@ -58,7 +54,6 @@ glob(program.in + "" + program.pattern, function(error, files){
         write(program.out + "/" + file.path + file.file_name.replace('.json', '.properties'), file.contents, function(err){
           if (err) errors.push(err);
           done(null, file);
-          bar.tick();
         });
       });
     };
@@ -68,8 +63,15 @@ glob(program.in + "" + program.pattern, function(error, files){
     batch.push(process_file(files[i]));
   }
 
+  batch.on('progress', function(event){
+    //console.log("Transcoding Item " + event.index + " of " + event.complete);
+    bar.ratio(event.index, event.total, "Transcoding " + event.index + " / " + event.total );
+  });
+
   batch.end(function(err, results){
-    console.log('\nTranscoding Complete');
+    var length = results.length;
+    bar.ratio(length, length, "Transcoding " + length + " / " + length);
+    console.log('Transcoding Complete');
     process.exit(0);
   });
 
@@ -79,6 +81,3 @@ var throw_error = function(error) {
   console.log(error);
   process.exit(1);
 };
-
-
-// new JSON2Property(program.args).read_directory();
