@@ -1,6 +1,6 @@
 {
   "name": "json2property",
-  "version": "1.0.2",
+  "version": "1.0.2-alpha",
   "description": "Given a Target Directory will go through and convert json files into properties files",
   "main": "index.js",
   "scripts": {
